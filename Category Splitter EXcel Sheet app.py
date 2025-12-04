@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import io
 
-st.title("📊 Excel Category Splitter")
+st.title("📊 Excel Category Splitter - OMAC Developer")
 
 # Step 1: Upload Excel file
 uploaded = st.file_uploader("Upload Excel File", type=["xlsx"])
