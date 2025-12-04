@@ -8,16 +8,19 @@ st.title("📊 Excel Category Splitter - OMAC Developer")
 uploaded = st.file_uploader("Upload Excel File", type=["xlsx"])
 
 if uploaded:
-    # Read excel and list sheets
-    xls = pd.ExcelFile(uploaded)
+    # Convert uploaded file to BytesIO
+    uploaded_bytes = uploaded.read()
+    xls = pd.ExcelFile(io.BytesIO(uploaded_bytes), engine="openpyxl")
+
+    # Step 2: Select sheet
     sheet_name = st.selectbox("Select sheet to process:", xls.sheet_names)
 
-    df = pd.read_excel(uploaded, sheet_name=sheet_name)
+    df = pd.read_excel(io.BytesIO(uploaded_bytes), sheet_name=sheet_name, engine="openpyxl")
 
     st.write("### Preview of selected sheet")
     st.dataframe(df.head())
 
-    # Step 2: Ask user to select category column
+    # Step 3: Select category column
     col = st.selectbox("Select the column that contains categories:", df.columns)
 
     if st.button("Generate Category-wise Sheets"):
@@ -27,22 +30,18 @@ if uploaded:
         writer = pd.ExcelWriter(output, engine="openpyxl")
 
         for cat in unique_cats:
-            # Filter rows for this category
             filtered = df[df[col] == cat]
-
-            # Clean sheet name (Excel doesn't allow some chars)
             clean_name = str(cat)[:31].replace("/", "-")
-
             filtered.to_excel(writer, sheet_name=clean_name, index=False)
 
         writer.save()
         output.seek(0)
 
-        st.success("Excel file generated successfully!")
+        st.success("Excel file created!")
 
         st.download_button(
             label="⬇ Download Category-wise Excel",
             data=output,
-            file_name="Category_Wise_File.xlsx",
+            file_name="Category_Split.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
