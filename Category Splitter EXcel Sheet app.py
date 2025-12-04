@@ -3,7 +3,7 @@ import xlwings as xw
 import tempfile
 import os
 
-st.title("Excel Category Splitter with VBA")
+st.title("Excel Category Splitter - OMAC Developer ")
 
 # Step 1: Upload Excel
 uploaded_file = st.file_uploader("Upload your Excel file", type=["xlsx", "xlsm"])
