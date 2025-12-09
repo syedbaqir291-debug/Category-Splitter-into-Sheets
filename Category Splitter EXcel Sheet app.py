@@ -3,7 +3,41 @@ import pandas as pd
 import io
 
 # ===========================
-# App Header
+# LOGIN SECTION (ADDED)
+# ===========================
+st.set_page_config(
+    page_title="Login - Categories Splitter",
+    page_icon="🔐",
+    layout="wide"
+)
+
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+    st.markdown(
+        """
+        <h2 style='text-align:center;'>🔐 Login Required</h2>
+        <hr>
+        """,
+        unsafe_allow_html=True
+    )
+
+    username = st.text_input("User Name")
+    password = st.text_input("Password", type="password")
+
+    if st.button("Login"):
+        if username == "Anum" and password == "Pakistan@1947":
+            st.session_state.authenticated = True
+            st.success("✅ Login successful")
+            st.rerun()
+        else:
+            st.error("❌ Invalid User Name or Password")
+
+    st.stop()
+
+# ===========================
+# App Header (UNCHANGED)
 # ===========================
 st.set_page_config(
     page_title="Categories Splitter for Excel - OMAC Developer",
@@ -49,10 +83,9 @@ if uploaded_file:
                 categories = df[category_col].dropna().unique()
                 for cat in categories:
                     df_cat = df[df[category_col] == cat]
-                    sheet_name_safe = str(cat)[:31]  # Excel max 31 chars
+                    sheet_name_safe = str(cat)[:31]
                     df_cat.to_excel(writer, sheet_name=sheet_name_safe, index=False)
-            processed_data = output.getvalue()
-            return processed_data
+            return output.getvalue()
         
         # ===========================
         # Button to Run
